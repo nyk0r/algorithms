@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using Algorithms;
 
 namespace AlgorithmsTests {
     [TestFixture]
-    internal class MergeSortTest {
+    internal class MergeSortTest : SortTest {
         [Test]
         public void TestMergeAsc() {
             var sequences = new[] {
@@ -34,7 +31,7 @@ namespace AlgorithmsTests {
             };
 
             foreach (var seq in sequences) {
-                var buffer = new double[seq.Length];
+                var buffer = new List<double>(seq.Length);
                 MergeSort.Merge(seq, 0, seq.Length, buffer, Sorting.Asc);
                 Assert.True(SequenceUtils.IsOrdered(seq, Ordering.LtOrEq));
             }
@@ -66,65 +63,32 @@ namespace AlgorithmsTests {
             };
 
             foreach (var seq in sequences) {
-                var buffer = new double[seq.Length];
+                var buffer = new List<double>(seq.Length);
                 MergeSort.Merge(seq, 0, seq.Length, buffer, Sorting.Desc);
                 Assert.True(SequenceUtils.IsOrdered(seq, Ordering.GtOrEq));
             }
         }
 
-        private static double[][] GetFixtures() {
-            var rnd = new Random();
-            return new [] {
-                // edge cases
-                new double[] { },
-                new double[] { 1 },
-
-                // warming up
-                new double[] { 1, 2 },
-                new double[] { 3, 1, 2 },
-                new double[] { 4, 2, 3, 5 },
-
-                // even
-                Enumerable.Range(0, 100).Select(_ => Math.Round(rnd.NextDouble() * 100)).ToArray(),
-                
-                // odd
-                Enumerable.Range(0, 99).Select(_ => Math.Round(rnd.NextDouble() * 100)).ToArray()
-            };
-        }
-
         [Test]
         public void TestTopDownSortAsc() {
-            foreach (var seq in GetFixtures()) {
-                MergeSort.SortTopDown(seq, Sorting.Asc);
-                Assert.True(SequenceUtils.IsOrdered(seq, Ordering.LtOrEq));
-            }
+            TestSortAsc(MergeSort.SortTopDown);
         }
 
         [Test]
-        public void TestTopDownSortDsc() {
-            foreach (var seq in GetFixtures()) {
-                MergeSort.SortTopDown(seq, Sorting.Desc);
-                Assert.True(SequenceUtils.IsOrdered(seq, Ordering.GtOrEq));
-            }
+        public void TestTopDownSortDesc() {
+            TestSortDesc(MergeSort.SortTopDown);
         }
 
         [Test]
         [Ignore]
         public void TestBottomUpSortAsc() {
-            foreach (var seq in GetFixtures()) {
-                MergeSort.SortBottomUp(seq, Sorting.Asc);
-                Assert.True(SequenceUtils.IsOrdered(seq, Ordering.LtOrEq));
-            }
+            TestSortAsc(MergeSort.SortBottomUp);
         }
 
         [Test]
         [Ignore]
-        public void TestBottomUpSortDsc()
-        {
-            foreach (var seq in GetFixtures()) {
-                MergeSort.SortBottomUp(seq, Sorting.Desc);
-                Assert.True(SequenceUtils.IsOrdered(seq, Ordering.GtOrEq));
-            }
+        public void TestBottomUpSortDesc() {
+            TestSortDesc(MergeSort.SortBottomUp);
         }
     }
 }

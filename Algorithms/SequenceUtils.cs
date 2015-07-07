@@ -29,6 +29,13 @@ namespace Algorithms {
             }
         }
 
+        public static Func<T, T, bool> GetSwapPrdicate<T>(Sorting dir) where T : IComparable<T> {
+            return
+                dir == Sorting.Asc
+                    ? (Func<T, T, bool>) ((a, b) => a.CompareTo(b) > 0)
+                    : (a, b) => a.CompareTo(b) < 0;
+        }
+
         public static bool IsOrdered<T>(IEnumerable<T> seq, Ordering ordering) where T : IComparable<T> {
             var comparer = GetComparer<T>(ordering);
             var enu = seq.GetEnumerator();

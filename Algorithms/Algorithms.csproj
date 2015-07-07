@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinarySearch.cs" />
+    <Compile Include="ElementarySorts.cs" />
     <Compile Include="MergeSort.cs" />
     <Compile Include="Enums\Ordering.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

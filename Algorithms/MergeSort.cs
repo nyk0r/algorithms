@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Algorithms {
@@ -29,17 +28,10 @@ namespace Algorithms {
             }
         }
 
-        private static Func<T, T, bool> GetSwapPrdicate<T>(Sorting dir) where T : IComparable<T> {
-            return
-                dir == Sorting.Asc
-                    ? (Func<T, T, bool>) ((a, b) => a.CompareTo(b) > 0)
-                    : (a, b) => a.CompareTo(b) < 0;
-        }
-
         internal static void Merge<T>(IList<T> seq, int begin, int end, IList<T> buffer, Sorting dir) where T : IComparable<T> {
             int middle = (begin + end)/2;
             SourceWrapper<T> left = new SourceWrapper<T>(seq, begin, middle), right = new SourceWrapper<T>(seq, middle, end);
-            var swapPredicate = GetSwapPrdicate<T>(dir);
+            var swapPredicate = SequenceUtils.GetSwapPrdicate<T>(dir);
             buffer.Clear();
             while (left.HasMore || right.HasMore) {
                 if (!left.HasMore || right.HasMore && swapPredicate(left.Peak, right.Peak)) {
@@ -60,7 +52,7 @@ namespace Algorithms {
             }
 
             if (end - begin == 2) {
-                var swapPredicate = GetSwapPrdicate<T>(dir);
+                var swapPredicate = SequenceUtils.GetSwapPrdicate<T>(dir);
                 if (swapPredicate(seq[begin], seq[end - 1])) {
                     var tmp = seq[begin];
                     seq[begin] = seq[end - 1];
