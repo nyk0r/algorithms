@@ -41,11 +41,12 @@ namespace Algorithms {
             PutSentinel(seq, movePredicate);
             for (var i = 1; i < length; i++) {
                 var j = i;
-                while (movePredicate(seq[j - 1], seq[j])) {
-                    seq[j - 1] = seq[j];
+                var current = seq[i];
+                while (movePredicate(seq[j - 1], current)) {
+                    seq[j] = seq[j - 1];
                     --j;
                 }
-                seq[j] = seq[i];
+                seq[j] = current;
             }
         }
 
@@ -72,11 +73,12 @@ namespace Algorithms {
             foreach (var gap in GetShellGaps(length)) {
                 for (var i = gap; i < length; i++) {
                     var j = i;
-                    while (j >= gap && movePredicate(seq[j - gap], seq[j])) {
+                    var current = seq[i];
+                    while (j >= gap && movePredicate(seq[j - gap], current)) {
                         seq[j] = seq[j - gap];
                         j -= gap;
                     }
-                    seq[j] = seq[i];
+                    seq[j] = current;
                 }
             }
         }

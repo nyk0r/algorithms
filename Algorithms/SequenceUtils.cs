@@ -36,8 +36,7 @@ namespace Algorithms {
                     : (a, b) => a.CompareTo(b) < 0;
         }
 
-        public static bool IsOrdered<T>(IEnumerable<T> seq, Ordering ordering) where T : IComparable<T> {
-            var comparer = GetComparer<T>(ordering);
+        public static bool CheckNeighbours<T>(IEnumerable<T> seq, Func<T, T, bool> predicate) {
             var enu = seq.GetEnumerator();
             try {
                 if (!enu.MoveNext()) {
@@ -49,16 +48,22 @@ namespace Algorithms {
                 }
                 do {
                     var b = enu.Current;
-                    if (!comparer(a, b)) {
+                    if (!predicate(a, b)) {
                         return false;
                     }
                     a = b;
                 } while (enu.MoveNext());
 
                 return true;
-            } finally {
+            }
+            finally {
                 enu.Dispose();
             }
+        }
+
+        public static bool IsOrdered<T>(IEnumerable<T> seq, Ordering ordering) where T : IComparable<T> {
+            var comparer = GetComparer<T>(ordering);
+            return CheckNeighbours(seq, (a, b) => comparer(a, b));
         } 
     }
 }

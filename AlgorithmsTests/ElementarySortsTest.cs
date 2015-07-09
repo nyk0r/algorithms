@@ -16,12 +16,12 @@ namespace AlgorithmsTests {
 
         [Test]
         public void TestInsertionAsc() {
-            TestSortAsc(ElementarySorts.Insertion);
+            TestSortAsc(ElementarySorts.Insertion, shouldBeStable: true);
         }
 
         [Test]
         public void TestInsertionDesc() {
-            TestSortDesc(ElementarySorts.Insertion);
+            TestSortDesc(ElementarySorts.Insertion, shouldBeStable: true);
         }
 
         [Test]
