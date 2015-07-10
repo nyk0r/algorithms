@@ -40,6 +40,7 @@ namespace AlgorithmsTests {
 
                 // warming up
                 new double[] { 1, 2 },
+                new double[] { 2, 1 },
                 new double[] { 3, 1, 2 },
                 new double[] { 4, 2, 3, 5 },
 

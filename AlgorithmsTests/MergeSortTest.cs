@@ -31,9 +31,9 @@ namespace AlgorithmsTests {
             };
 
             foreach (var seq in sequences) {
-                var buffer = new List<double>(seq.Length);
-                MergeSort.Merge(seq, 0, seq.Length, buffer, Sorting.Asc);
-                Assert.True(SequenceUtils.IsOrdered(seq, Ordering.LtOrEq));
+                var buffer = new double[seq.Length];
+                MergeSort.Merge(seq, 0, seq.Length/2, seq.Length, buffer, Sorting.Asc);
+                Assert.True(SequenceUtils.IsOrdered(buffer, Ordering.LtOrEq));
             }
         }
 
@@ -63,32 +63,30 @@ namespace AlgorithmsTests {
             };
 
             foreach (var seq in sequences) {
-                var buffer = new List<double>(seq.Length);
-                MergeSort.Merge(seq, 0, seq.Length, buffer, Sorting.Desc);
-                Assert.True(SequenceUtils.IsOrdered(seq, Ordering.GtOrEq));
+                var buffer = new double[seq.Length];
+                MergeSort.Merge(seq, 0, seq.Length/2, seq.Length, buffer, Sorting.Desc);
+                Assert.True(SequenceUtils.IsOrdered(buffer, Ordering.GtOrEq));
             }
         }
 
         [Test]
         public void TestTopDownSortAsc() {
-            TestSortAsc(MergeSort.SortTopDown);
+            TestSortAsc(MergeSort.SortTopDown, shouldBeStable: true);
         }
 
         [Test]
         public void TestTopDownSortDesc() {
-            TestSortDesc(MergeSort.SortTopDown);
+            TestSortDesc(MergeSort.SortTopDown, shouldBeStable: true);
         }
 
         [Test]
-        [Ignore]
         public void TestBottomUpSortAsc() {
-            TestSortAsc(MergeSort.SortBottomUp);
+            TestSortAsc(MergeSort.SortBottomUp, shouldBeStable: true);
         }
 
         [Test]
-        [Ignore]
         public void TestBottomUpSortDesc() {
-            TestSortDesc(MergeSort.SortBottomUp);
+            TestSortDesc(MergeSort.SortBottomUp, shouldBeStable: true);
         }
     }
 }

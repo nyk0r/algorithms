@@ -11,11 +11,11 @@ namespace Algorithms {
 
         public static void Selection<T>(IList<T> seq, Sorting dir = Sorting.Asc) where T : IComparable<T> {
             var length = seq.Count;
-            var swapPredicate = SequenceUtils.GetSwapPrdicate<T>(dir);
+            var areOutOfOrder = SequenceUtils.GetOutOfOrderPrdicate<T>(dir);
             for (var i = 0; i < length - 1; i++) {
                 var swapIdx = i;
                 for (var j = i + 1; j < length; j++) {
-                    if (swapPredicate(seq[swapIdx], seq[j])) {
+                    if (areOutOfOrder(seq[swapIdx], seq[j])) {
                         swapIdx = j;
                     }
                 }
@@ -25,9 +25,9 @@ namespace Algorithms {
             }
         }
 
-        private static void PutSentinel<T>(IList<T> seq, Func<T, T, bool> swapPredicate) {
+        private static void PutSentinel<T>(IList<T> seq, Func<T, T, bool> areOutOfOrder) {
             for (var i = seq.Count - 1; i > 0; i--) {
-                if (swapPredicate(seq[i - 1], seq[i])) {
+                if (areOutOfOrder(seq[i - 1], seq[i])) {
                     Swap(seq, i - 1, i);
                 }
             }
@@ -35,7 +35,7 @@ namespace Algorithms {
 
         public static void Insertion<T>(IList<T> seq, Sorting dir = Sorting.Asc) where T : IComparable<T> {
             var length = seq.Count;
-            var movePredicate = SequenceUtils.GetSwapPrdicate<T>(dir);
+            var movePredicate = SequenceUtils.GetOutOfOrderPrdicate<T>(dir);
 
             // Sentinel is an optimization made to remove a (j > 0) check in inner loop.
             PutSentinel(seq, movePredicate);
@@ -68,7 +68,7 @@ namespace Algorithms {
 
         public static void Shell<T>(IList<T> seq, Sorting dir = Sorting.Asc) where T : IComparable<T> {
             var length = seq.Count;
-            var movePredicate = SequenceUtils.GetSwapPrdicate<T>(dir);
+            var movePredicate = SequenceUtils.GetOutOfOrderPrdicate<T>(dir);
 
             foreach (var gap in GetShellGaps(length)) {
                 for (var i = gap; i < length; i++) {
