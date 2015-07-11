@@ -32,7 +32,7 @@ namespace AlgorithmsTests {
 
             foreach (var seq in sequences) {
                 var buffer = new double[seq.Length];
-                MergeSort.Merge(seq, 0, seq.Length/2, seq.Length, buffer, Sorting.Asc);
+                MergeSort.Merge(seq, 0, seq.Length/2, seq.Length, buffer, SequenceUtils.GetOutOfOrderPrdicate<double>(Sorting.Asc));
                 Assert.True(SequenceUtils.IsOrdered(buffer, Ordering.LtOrEq));
             }
         }
@@ -64,7 +64,7 @@ namespace AlgorithmsTests {
 
             foreach (var seq in sequences) {
                 var buffer = new double[seq.Length];
-                MergeSort.Merge(seq, 0, seq.Length/2, seq.Length, buffer, Sorting.Desc);
+                MergeSort.Merge(seq, 0, seq.Length / 2, seq.Length, buffer, SequenceUtils.GetOutOfOrderPrdicate<double>(Sorting.Desc));
                 Assert.True(SequenceUtils.IsOrdered(buffer, Ordering.GtOrEq));
             }
         }

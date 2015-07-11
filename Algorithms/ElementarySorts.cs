@@ -10,8 +10,12 @@ namespace Algorithms {
         }
 
         public static void Selection<T>(IList<T> seq, Sorting dir = Sorting.Asc) where T : IComparable<T> {
+            Selection(seq, dir, Comparer<T>.Default);
+        }
+
+        public static void Selection<T>(IList<T> seq, Sorting dir, IComparer<T> comparer) {
             var length = seq.Count;
-            var areOutOfOrder = SequenceUtils.GetOutOfOrderPrdicate<T>(dir);
+            var areOutOfOrder = SequenceUtils.GetOutOfOrderPrdicate(dir, comparer);
             for (var i = 0; i < length - 1; i++) {
                 var swapIdx = i;
                 for (var j = i + 1; j < length; j++) {
@@ -34,8 +38,12 @@ namespace Algorithms {
         }
 
         public static void Insertion<T>(IList<T> seq, Sorting dir = Sorting.Asc) where T : IComparable<T> {
+            Insertion(seq, dir, Comparer<T>.Default);
+        }
+
+        public static void Insertion<T>(IList<T> seq, Sorting dir, IComparer<T> comparer) {
             var length = seq.Count;
-            var movePredicate = SequenceUtils.GetOutOfOrderPrdicate<T>(dir);
+            var movePredicate = SequenceUtils.GetOutOfOrderPrdicate(dir, comparer);
 
             // Sentinel is an optimization made to remove a (j > 0) check in inner loop.
             PutSentinel(seq, movePredicate);
@@ -67,8 +75,12 @@ namespace Algorithms {
         } 
 
         public static void Shell<T>(IList<T> seq, Sorting dir = Sorting.Asc) where T : IComparable<T> {
+            Shell(seq, dir, Comparer<T>.Default);
+        }
+
+        public static void Shell<T>(IList<T> seq, Sorting dir, IComparer<T> comparer) {
             var length = seq.Count;
-            var movePredicate = SequenceUtils.GetOutOfOrderPrdicate<T>(dir);
+            var movePredicate = SequenceUtils.GetOutOfOrderPrdicate(dir, comparer);
 
             foreach (var gap in GetShellGaps(length)) {
                 for (var i = gap; i < length; i++) {
