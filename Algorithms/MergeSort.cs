@@ -31,11 +31,14 @@ namespace Algorithms {
             }
 
             var middle = (begin + end)/2;
+            var areOutOfOrder = SequenceUtils.GetOutOfOrderPrdicate<T>(dir);
             SortTopDown(seq, begin, middle, buffer, dir);
             SortTopDown(seq, middle, end, buffer, dir);
-            Merge(seq, begin, middle, end, buffer, dir);
-            for (var idx = begin; idx < end; idx++) {
-                seq[idx] = buffer[idx];
+            if (areOutOfOrder(seq[middle - 1], seq[middle])) {
+                Merge(seq, begin, middle, end, buffer, dir);
+                for (var idx = begin; idx < end; idx++) {
+                    seq[idx] = buffer[idx];
+                }
             }
         }
 
@@ -45,12 +48,15 @@ namespace Algorithms {
 
         public static void SortBottomUp<T>(IList<T> seq, Sorting dir = Sorting.Asc) where T : IComparable<T> {
             var buffer = new T[seq.Count];
+            var areOutOfOrder = SequenceUtils.GetOutOfOrderPrdicate<T>(dir);
             for (var width = 1; width <= seq.Count; width *= 2) {
                 for (var begin = 0; begin < seq.Count - width; begin += 2*width) {
                     int middle = begin + width, end = Math.Min(begin + 2*width, seq.Count);
-                    Merge(seq, begin, middle, end, buffer, dir);
-                    for (var idx = begin; idx < end; idx++) {
-                        seq[idx] = buffer[idx];
+                    if (areOutOfOrder(seq[middle - 1], seq[middle])) {
+                        Merge(seq, begin, middle, end, buffer, dir);
+                        for (var idx = begin; idx < end; idx++) {
+                            seq[idx] = buffer[idx];
+                        }
                     }
                 }
             }
