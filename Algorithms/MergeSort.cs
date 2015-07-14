@@ -43,7 +43,7 @@ namespace Algorithms {
                 return;
             }
 
-            var middle = (begin + end)/2;
+            var middle = begin + (end - begin)/2;
             SortTopDown(dest, source, begin, middle, areOutOfOrder);
             SortTopDown(dest, source, middle, end, areOutOfOrder);
             if (areOutOfOrder(source[middle - 1], source[middle])) {

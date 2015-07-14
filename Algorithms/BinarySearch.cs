@@ -16,7 +16,7 @@ namespace Algorithms {
 
             int low = 0, high = sortedSeq.Count - 1;
             while (low < high) {
-                int mid = (low + high)/2;
+                var mid = low + (high - low)/2;
 
                 if (comparison(elem, sortedSeq[mid])) {
                     high = mid;
