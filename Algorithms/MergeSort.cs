@@ -7,10 +7,6 @@ namespace Algorithms {
         private const int SIMPLE_SORT_THRESHOLD = 15;
 
         internal static void Merge<T>(IList<T> seq, int begin, int middle, int end, IList<T> buffer, Func<T, T, bool> areOutOfOrder) {
-            for (var idx = begin; idx < end; idx++) {
-                buffer[idx] = seq[idx];
-            }
-
             int left = begin, right = middle;
             for (var idx = begin; idx < end; idx++) {
                 if (left >= middle) {
