@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Principal;
 
 namespace Algorithms {
     public static class MergeSort {
+        private const int SIMPLE_SORT_THRESHOLD = 15;
+
         internal static void Merge<T>(IList<T> seq, int begin, int middle, int end, IList<T> buffer, Func<T, T, bool> areOutOfOrder) {
             for (var idx = begin; idx < end; idx++) {
                 buffer[idx] = seq[idx];
@@ -24,19 +27,33 @@ namespace Algorithms {
             }
         }
 
-        private static void SortTopDown<T>(IList<T> seq, int begin, int end, IList<T> buffer, Func<T, T, bool> areOutOfOrder) {
+        internal static void InsertionSort<T>(IList<T> source, IList<T> dest, int begin, int end, Func<T,T, bool> areOutOfOrder) {
+            for (var i = begin; i < end; i++) {
+                dest[i] = source[i];
+                for (var j = i; j > begin && areOutOfOrder(dest[j - 1], dest[j]); --j) {
+                    var tmp = dest[j];
+                    dest[j] = dest[j - 1];
+                    dest[j - 1] = tmp;
+                } 
+            }
+        }
+
+        private static void SortTopDown<T>(IList<T> source, IList<T> dest, int begin, int end, Func<T, T, bool> areOutOfOrder) {
             if (end - begin <= 1) {
+                return;
+            }
+            if (end - begin <= SIMPLE_SORT_THRESHOLD) {
+                InsertionSort(source, dest, begin, end, areOutOfOrder);
                 return;
             }
 
             var middle = (begin + end)/2;
-            SortTopDown(seq, begin, middle, buffer, areOutOfOrder);
-            SortTopDown(seq, middle, end, buffer, areOutOfOrder);
-            if (areOutOfOrder(seq[middle - 1], seq[middle])) {
-                Merge(seq, begin, middle, end, buffer, areOutOfOrder);
-                for (var idx = begin; idx < end; idx++) {
-                    seq[idx] = buffer[idx];
-                }
+            SortTopDown(dest, source, begin, middle, areOutOfOrder);
+            SortTopDown(dest, source, middle, end, areOutOfOrder);
+            if (areOutOfOrder(source[middle - 1], source[middle])) {
+                Merge(source, begin, middle, end, dest, areOutOfOrder);
+            } else {
+                SequenceUtils.Copy(source, dest, begin, end);
             }
         }
 
@@ -45,7 +62,9 @@ namespace Algorithms {
         }
 
         public static void SortTopDown<T>(IList<T> seq, Sorting dir, IComparer<T> comparer) {
-            SortTopDown(seq, 0, seq.Count, new T[seq.Count], SequenceUtils.GetOutOfOrderPrdicate(dir, comparer));
+            var buffer = new T[seq.Count];
+            SequenceUtils.Copy(seq, buffer, 0, seq.Count);
+            SortTopDown(buffer, seq, 0, seq.Count, SequenceUtils.GetOutOfOrderPrdicate(dir, comparer));
         }
 
         public static void SortBottomUp<T>(IList<T> seq, Sorting dir = Sorting.Asc) where T : IComparable<T> {
@@ -60,9 +79,7 @@ namespace Algorithms {
                     int middle = begin + width, end = Math.Min(begin + 2*width, seq.Count);
                     if (areOutOfOrder(seq[middle - 1], seq[middle])) {
                         Merge(seq, begin, middle, end, buffer, areOutOfOrder);
-                        for (var idx = begin; idx < end; idx++) {
-                            seq[idx] = buffer[idx];
-                        }
+                        SequenceUtils.Copy(buffer, seq, begin, end);
                     }
                 }
             }

@@ -81,5 +81,11 @@ namespace Algorithms {
             var comparison = GetComparer(ordering, comparer);
             return CheckNeighbours(seq, (a, b) => comparison(a, b));
         }
+
+        public static void Copy<T>(IList<T> source, IList<T> dest, int begin, int end) {
+            for (var idx = begin; idx < end; idx++) {
+                dest[idx] = source[idx];
+            }
+        }
     }
 }
