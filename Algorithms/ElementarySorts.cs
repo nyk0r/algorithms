@@ -3,12 +3,6 @@ using System.Collections.Generic;
 
 namespace Algorithms {
     public static class ElementarySorts {
-        private static void Swap<T>(IList<T> seq, int a, int b) {
-            var tmp = seq[a];
-            seq[a] = seq[b];
-            seq[b] = tmp;
-        }
-
         public static void Selection<T>(IList<T> seq, Sorting dir = Sorting.Asc) where T : IComparable<T> {
             Selection(seq, dir, Comparer<T>.Default);
         }
@@ -24,7 +18,7 @@ namespace Algorithms {
                     }
                 }
                 if (swapIdx != i) {
-                    Swap(seq, i, swapIdx);
+                    SequenceUtils.Swap(seq, i, swapIdx);
                 }
             }
         }
@@ -32,7 +26,7 @@ namespace Algorithms {
         private static void PutSentinel<T>(IList<T> seq, Func<T, T, bool> areOutOfOrder) {
             for (var i = seq.Count - 1; i > 0; i--) {
                 if (areOutOfOrder(seq[i - 1], seq[i])) {
-                    Swap(seq, i - 1, i);
+                    SequenceUtils.Swap(seq, i - 1, i);
                 }
             }
         }

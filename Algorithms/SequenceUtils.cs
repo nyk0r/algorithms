@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Algorithms {
     public static class SequenceUtils {
@@ -85,6 +86,22 @@ namespace Algorithms {
         public static void Copy<T>(IList<T> source, IList<T> dest, int begin, int end) {
             for (var idx = begin; idx < end; idx++) {
                 dest[idx] = source[idx];
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Swap<T>(IList<T> seq, int i, int j) {
+            T tmp = seq[i];
+            seq[i] = seq[j];
+            seq[j] = tmp;
+        }
+
+        private static readonly Random Rnd = new Random();
+
+        public static void Shuffle<T>(IList<T> seq) {
+            // Fisher–Yates shuffle
+            for (var i = 0; i < seq.Count; i++) {
+                Swap(seq, i, Rnd.Next(i, seq.Count));
             }
         }
     }
