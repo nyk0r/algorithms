@@ -45,7 +45,7 @@ namespace AlgorithmsTests {
 
                 // even
                 arr1.Select(a => (double)a).ToArray(),
-                new double[] { 4, 2, 3, 5, 5, 4, 2, 3},
+                new double[] { 4, 2, 3, 5, 5, 4, 2, 3 },
 
                 // odd
                 arr2.Select(a => (double)a).ToArray(),

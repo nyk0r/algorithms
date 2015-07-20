@@ -46,6 +46,7 @@
     <Compile Include="ElementarySortsTest.cs" />
     <Compile Include="MergeSortTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuickSortTest.cs" />
     <Compile Include="SequenceUtilsTest.cs" />
     <Compile Include="SortTest.cs" />
   </ItemGroup>
