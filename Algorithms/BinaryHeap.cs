@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Algorithms {
-    public enum HeapType { Max, Min }
+    public enum BinaryHeapType { Max, Min }
 
-    public class OrderedHeap<T> : IEnumerable<T> {
+    public class BinaryHeap<T> : IEnumerable<T> {
         private Func<T, T, bool> _comparer;
         private IList<T> _content; 
 
-        public OrderedHeap(IEnumerable<T> source, IComparer<T> comparer, HeapType type) {
+        public BinaryHeap(IEnumerable<T> source, IComparer<T> comparer, BinaryHeapType type) {
             switch (type) {
-                case HeapType.Max:
+                case BinaryHeapType.Max:
                     _comparer = (a, b) => comparer.Compare(a, b) >= 0;
                     break;
-                case HeapType.Min:
+                case BinaryHeapType.Min:
                     _comparer = (a, b) => comparer.Compare(a, b) <= 0;
                     break;
                 default:
@@ -26,9 +26,9 @@ namespace Algorithms {
             }
         }
 
-        public OrderedHeap(IEnumerable<T> source, HeapType type) : this(source, Comparer<T>.Default, type) { }
+        public BinaryHeap(IEnumerable<T> source, BinaryHeapType type) : this(source, Comparer<T>.Default, type) { }
 
-        public OrderedHeap(HeapType type) : this(new T[] { }, type) { }
+        public BinaryHeap(BinaryHeapType type) : this(new T[] { }, type) { }
 
         public void Add(T item) {
             _content.Add(item);
