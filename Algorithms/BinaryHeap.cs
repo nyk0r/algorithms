@@ -21,7 +21,7 @@ namespace Algorithms {
                     throw new ArgumentOutOfRangeException("type");
             }
             _content = new List<T>(source);
-            for (var node = _content.Count/2; node > 0; --node) {
+            for (var node = _content.Count/2; node >= 0; --node) {
                 Sink(node);
             }
         }
@@ -32,7 +32,7 @@ namespace Algorithms {
 
         public void Add(T item) {
             _content.Add(item);
-            Swim(_content.Count);
+            Swim(_content.Count - 1);
         }
 
         public T GetPeak() {
@@ -43,7 +43,7 @@ namespace Algorithms {
             var result = _content[0];
             _content[0] = _content[_content.Count - 1];
             _content.RemoveAt(_content.Count - 1);
-            Sink(1);
+            Sink(0);
             return result;
         }
 
@@ -52,42 +52,37 @@ namespace Algorithms {
         public int Count { get { return _content.Count; }}
 
         private void Swim(int node) {
-            for (var parent = node/2; 
-                parent > 0 && !_comparer(Get(parent), Get(node)); 
-                node = parent, parent = node/2) {
+            for (var parent = (node - 1)/2;
+                parent >= 0 && !_comparer(_content[parent], _content[node]);
+                node = parent, parent = (node - 1)/2) {
                 Swap(parent, node);
             }
         }
 
         private void Sink(int node) {
-            for (var max = Max(node*2, node*2 + 1);
+            for (var max = Max(node*2 + 1, node*2 + 2);
                 max != -1 && Max(node, max) != node;
-                node = max, max = Max(node*2, node*2 + 1)) {
+                node = max, max = Max(node*2 + 1, node*2 + 2)) {
                 Swap(node, max);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int Max(int node1, int node2) {
-            if (node1 > _content.Count) {
+            if (node1 >= _content.Count) {
                 return -1;
             }
-            if (node2 > _content.Count) {
+            if (node2 >= _content.Count) {
                 return node1;
             }
-            return _comparer(Get(node1), Get(node2)) ? node1 : node2;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private T Get(int node) {
-            return _content[node - 1];
+            return _comparer(_content[node1], _content[node2]) ? node1 : node2;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Swap(int node1, int node2) {
-            var tmp = _content[node1 - 1];
-            _content[node1 - 1] = _content[node2 - 1];
-            _content[node2 - 1] = tmp;
+            var tmp = _content[node1];
+            _content[node1] = _content[node2];
+            _content[node2] = tmp;
         }
 
         public IEnumerator<T> GetEnumerator() {
