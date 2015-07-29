@@ -3,32 +3,34 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Algorithms {
-    public enum BinaryHeapType { Max, Min }
+    public enum DHeapType { Max, Min }
 
-    public class BinaryHeap<T> : IEnumerable<T> {
+    public class DHeap<T> : IEnumerable<T> {
         private Func<T, T, bool> _comparer;
-        private IList<T> _content; 
+        private IList<T> _content;
+        private int _rank;
 
-        public BinaryHeap(IEnumerable<T> source, IComparer<T> comparer, BinaryHeapType type) {
+        public DHeap(IEnumerable<T> source, IComparer<T> comparer, DHeapType type, int rank = 2) {
             switch (type) {
-                case BinaryHeapType.Max:
+                case DHeapType.Max:
                     _comparer = (a, b) => comparer.Compare(a, b) >= 0;
                     break;
-                case BinaryHeapType.Min:
+                case DHeapType.Min:
                     _comparer = (a, b) => comparer.Compare(a, b) <= 0;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("type");
             }
             _content = new List<T>(source);
-            for (var node = _content.Count/2; node >= 0; --node) {
+            _rank = rank;
+            for (var node = _content.Count/_rank; node >= 0; --node) {
                 Sink(node);
             }
         }
 
-        public BinaryHeap(IEnumerable<T> source, BinaryHeapType type) : this(source, Comparer<T>.Default, type) { }
+        public DHeap(IEnumerable<T> source, DHeapType type, int rank = 2) : this(source, Comparer<T>.Default, type) { }
 
-        public BinaryHeap(BinaryHeapType type) : this(new T[] { }, type) { }
+        public DHeap(DHeapType type, int rank = 2) : this(new T[] { }, type) { }
 
         public void Add(T item) {
             _content.Add(item);
@@ -52,30 +54,31 @@ namespace Algorithms {
         public int Count { get { return _content.Count; }}
 
         private void Swim(int node) {
-            for (var parent = (node - 1)/2;
+            for (var parent = (node - 1)/_rank;
                 parent >= 0 && !_comparer(_content[parent], _content[node]);
-                node = parent, parent = (node - 1)/2) {
+                node = parent, parent = (node - 1)/_rank) {
                 Swap(parent, node);
             }
         }
 
         private void Sink(int node) {
-            for (var max = Max(node*2 + 1, node*2 + 2);
-                max != -1 && Max(node, max) != node;
-                node = max, max = Max(node*2 + 1, node*2 + 2)) {
-                Swap(node, max);
+            for (var maxChild = MaxChild(node);
+                maxChild != -1 && !_comparer(_content[node], _content[maxChild]);
+                node = maxChild, maxChild = MaxChild(node)) {
+                Swap(node, maxChild);
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int Max(int node1, int node2) {
-            if (node1 >= _content.Count) {
-                return -1;
+        private int MaxChild(int node) {
+            var result = -1;
+            for (var child = node*_rank + 1; child < _content.Count && child <= node*_rank + _rank; ++child) {
+                if (result == -1) {
+                    result = child;
+                } else if (!_comparer(_content[result], _content[child])) {
+                    result = child;
+                }
             }
-            if (node2 >= _content.Count) {
-                return node1;
-            }
-            return _comparer(_content[node1], _content[node2]) ? node1 : node2;
+            return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
