@@ -153,8 +153,8 @@ namespace AlgorithmsTests {
                 foreach (var result in fixture.Value) {
                     var arr = (double[])fixture.Key.Clone();
                     var point = QuickSort.Partition2(arr, 0, arr.Length - 1, SequenceUtils.GetOutOfOrderPrdicate<double>(result.Sorting));
-                    Assert.AreEqual(point, result.Point);
-                    CollectionAssert.AreEqual(arr, result.Sequnece);
+                    Assert.AreEqual(result.Point, point);
+                    CollectionAssert.AreEqual(result.Sequnece, arr);
                 }
             }
         }
@@ -290,8 +290,8 @@ namespace AlgorithmsTests {
                     var arr = (double[]) fixture.Key.Clone();
                     var points = QuickSort.Partition3(arr, 0, arr.Length - 1,
                         SequenceUtils.GetOutOfOrderPrdicate<double>(result.Sorting));
-                    Assert.AreEqual(points, result.Points);
-                    CollectionAssert.AreEqual(arr, result.Sequnece);
+                    Assert.AreEqual(result.Points, points);
+                    CollectionAssert.AreEqual(result.Sequnece, arr);
                 }
             }
         }

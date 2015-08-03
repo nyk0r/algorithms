@@ -39,7 +39,7 @@ namespace AlgorithmsTests {
             foreach (var item in combined) {
                 Assert.AreEqual(item, heap.GetPeak());
             }
-            Assert.AreEqual(heap.Count, 0);
+            Assert.AreEqual(0, heap.Count);
         }
     }
 }
