@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinarySearchTest.cs" />
+    <Compile Include="BinarySearchTreeTest.cs" />
     <Compile Include="ElementarySortsTest.cs" />
     <Compile Include="DHeapTest.cs" />
     <Compile Include="MergeSortTest.cs" />
