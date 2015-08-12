@@ -281,10 +281,10 @@ namespace Algorithms {
                 return 0;
             }
             var cmp = _comparer.Compare(key, root.Key);
-            if (cmp < 0) {
+            if (cmp > 0) {
+                return 1 + (root.Left != null ? root.Left.Size : 0) + Rank(root.Right, key);
+            } else if (cmp < 0) {
                 return Rank(root.Left, key);
-            } else if (cmp > 0) {
-                return root.Size;
             } else {
                 return root.Left != null ? root.Left.Size : 0;
             }
