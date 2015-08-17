@@ -49,6 +49,16 @@ namespace Algorithms {
 
         public BinarySearchTree() : this(Comparer<TKey>.Default) { }
 
+        private bool TryGetKeyValuePair(Func<Node> action, out KeyValuePair<TKey, TValue> result) {
+            var tmp = action();
+            if (tmp != null) {
+                result = tmp.ToKeyValuePair();
+                return true;
+            }
+            result = new KeyValuePair<TKey, TValue>();
+            return false;
+        }
+
         #region Insert and retrieve
         private Node Put(Node root, TKey key, TValue value) {
             if (root == null) {
@@ -142,6 +152,8 @@ namespace Algorithms {
                     return root.Right;
                 }
 
+                // Taking the min key elenent from the right subtree.
+                // It is also possible to take the max key element the left subtree.
                 var minRight = Min(root.Right);
                 root.Right = DeleteMin(root.Right);
                 root.Key = minRight.Key;
@@ -193,13 +205,7 @@ namespace Algorithms {
         }
 
         public bool TryGetMin(out KeyValuePair<TKey, TValue> min) {
-            var minNode = Min(_root);
-            if (minNode != null) {
-                min = minNode.ToKeyValuePair();
-                return true;
-            }
-            min = new KeyValuePair<TKey, TValue>();
-            return false;
+            return TryGetKeyValuePair(() => Min(_root), out min);
         }
 
         private Node Max(Node root) {
@@ -213,13 +219,7 @@ namespace Algorithms {
 
         public bool TryGetMax(out KeyValuePair<TKey, TValue> max)
         {
-            var maxNode = Max(_root);
-            if (maxNode != null) {
-                max = maxNode.ToKeyValuePair();
-                return true;
-            }
-            max = new KeyValuePair<TKey, TValue>();
-            return false;
+            return TryGetKeyValuePair(() => Max(_root), out max);
         }
         #endregion
 
@@ -240,13 +240,7 @@ namespace Algorithms {
         }
 
         public bool TryFloor(TKey key, out KeyValuePair<TKey, TValue> floor) {
-            var node = Floor(_root, key);
-            if (node != null) {
-                floor = node.ToKeyValuePair();
-                return true;
-            }
-            floor = new KeyValuePair<TKey, TValue>();
-            return false;
+            return TryGetKeyValuePair(() => Floor(_root, key), out floor);
         }
 
         private Node Ceil(Node root, TKey key) {
@@ -265,13 +259,7 @@ namespace Algorithms {
         }
 
         public bool TryCeil(TKey key, out KeyValuePair<TKey, TValue> ceil) {
-            var node = Ceil(_root, key);
-            if (node != null) {
-                ceil = node.ToKeyValuePair();
-                return true;
-            }
-            ceil = new KeyValuePair<TKey, TValue>();
-            return false;
+            return TryGetKeyValuePair(() => Ceil(_root, key), out ceil);
         }
         #endregion
 
@@ -295,20 +283,67 @@ namespace Algorithms {
         }
         #endregion
 
-        public TKey Select(int k) {
-            throw new NotImplementedException();
+        private Node Select(Node root, int smallerKeysCount) {
+            if (root == null) {
+                return null;
+            }
+            var leftSize = root.Left != null ? root.Left.Size : 0;
+            if (leftSize > smallerKeysCount) {
+                return Select(root.Left, smallerKeysCount);
+            } else if (leftSize < smallerKeysCount) {
+                return Select(root.Left, smallerKeysCount - leftSize - 1);
+            } else {
+                return root;
+            }
+        }
+
+        public bool TrySelect(int smallerKeysCount, out KeyValuePair<TKey, TValue> upper) {
+            return TryGetKeyValuePair(() => Select(_root, smallerKeysCount), out upper);
+        }
+
+        private void VisitNodesRange(Node root, TKey lo, TKey hi, Action<Node> action) {
+            if (root == null) {
+                return;
+            }
+            var cmplo = _comparer.Compare(lo, root.Key);
+            var cmphi = _comparer.Compare(hi, root.Key);
+            if (cmplo < 0) {
+                VisitNodesRange(root.Left, lo, hi, action);
+            }
+            if (cmplo <= 0 && cmphi >= 0) {
+                action(root);
+            }
+            if (cmphi > 0) {
+                VisitNodesRange(root.Right, lo, hi, action);
+            }
         }
 
         public int Size(TKey lo, TKey hi) {
-            throw new NotImplementedException();
+            var result = 0;
+            VisitNodesRange(_root, lo, hi, n => { ++result; });
+            return result;
         }
 
-        public IEnumerable<TKey> Keys(TKey lo, TKey hi) {
-            throw new NotImplementedException();
+        public IEnumerable<KeyValuePair<TKey, TValue>> GetItems(TKey lo, TKey hi) {
+            var items = new List<KeyValuePair<TKey, TValue>>(Size());
+            VisitNodesRange(_root, lo, hi, n => { items.Add(n.ToKeyValuePair()); });
+            return items;
         }
 
-        public IEnumerable<TKey> Keys() {
-            throw new NotImplementedException();
+        private void VisitNodeInOrder(Node root, Action<Node> action) {
+            if (root == null) {
+                return;
+            }
+
+            VisitNodeInOrder(root.Left, action);
+            action(root);
+            VisitNodeInOrder(root.Right, action);
+        }
+
+        public IEnumerable<KeyValuePair<TKey, TValue>> GetItems() {
+            var items = new List<KeyValuePair<TKey, TValue>>(Size());
+            VisitNodeInOrder(_root, n => { items.Add(n.ToKeyValuePair()); });
+            return items;
         }
     }
 }

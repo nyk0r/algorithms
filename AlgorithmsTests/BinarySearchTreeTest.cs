@@ -17,8 +17,8 @@ namespace AlgorithmsTests {
             Tuple.Create("N", 9),
             Tuple.Create("P", 10),
             Tuple.Create("R", 3),
-            Tuple.Create("Z", 0),
-            Tuple.Create("X", 7)
+            Tuple.Create("X", 7),
+            Tuple.Create("Z", 0)
         }; 
 
         private static BinarySearchTree<string, int> CreateBST() {;
@@ -170,6 +170,25 @@ namespace AlgorithmsTests {
             for (var idx = 0; idx < orderedKeys.Count; idx++) {
                 Assert.AreEqual(idx, bst.Rank(orderedKeys[idx]));
             }
+        }
+
+        [Test]
+        public void TestTraversal() {
+            var bst = CreateBST();
+            CollectionAssert.AreEqual(
+                _result.Select(r => r.Item1),
+                bst.GetItems().Select(p => p.Key)
+            );
+        }
+
+        [Test]
+        public void TestSelect() {
+            
+        }
+
+        [Test]
+        public void TestSelectRange() {
+            
         }
     }
 }
