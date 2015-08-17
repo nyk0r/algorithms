@@ -60,27 +60,46 @@ namespace Algorithms {
         }
 
         #region Insert and retrieve
-        private Node Put(Node root, TKey key, TValue value) {
-            if (root == null) {
-                return new Node(key, value);
-            }
-            var cmp = _comparer.Compare(key, root.Key);
-            if (cmp > 0) {
-                root.Right = Put(root.Right, key, value);
-            } else if (cmp < 0) {
-                root.Left = Put(root.Left, key, value);
-            } else {
-                root.Value = value;
-            }
-            root.UpdateAugumentations();
-            return root;
-        }
-
         public void Put(TKey key, TValue value) {
             if (key == null) {
                 throw new ArgumentNullException();
             }
-            _root = Put(_root, key, value);
+
+            if (_root == null) {
+                _root = new Node(key, value);
+                _root.UpdateAugumentations();
+                return;
+            }
+
+            var root = _root;
+            var nodesStack = new Stack<Node>(Size() + 1);
+            while (root != null) {
+                nodesStack.Push(root);
+                var cmp = _comparer.Compare(key, root.Key);
+                if (cmp == 0) {
+                    root.Value = value;
+                    return; // no need for augumentations updates
+                }
+
+                if (cmp > 0) {
+                    if (root.Right == null) {
+                        root.Right = new Node(key, value);
+                        nodesStack.Push(root.Right);
+                        break;
+                    }
+                    root = root.Right;
+                } else if (cmp < 0) {
+                    if (root.Left == null) {
+                        root.Left = new Node(key, value);
+                        nodesStack.Push(root.Left);
+                        break;
+                    }
+                    root = root.Left;
+                }
+            }
+            foreach (var node in nodesStack) {
+                node.UpdateAugumentations();
+            }
         }
 
         private Node Get(Node root, TKey key) {
